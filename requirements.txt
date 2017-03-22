@@ -1,0 +1,6 @@
+jupyter==1.0.0
+jupyter-client==4.4.0
+jupyter-console==5.1.0
+jupyter-core==4.2.1
+matplotlib==2.0.0
+numpy==1.12.0

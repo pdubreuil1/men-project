@@ -1,0 +1,13 @@
+[flake8]
+ignore = D203
+exclude =
+    .git,
+    __pycache__,
+    .ipynb_checkpoints,
+    data,
+    models,
+    submissions,
+    venv,
+    .gitignore,
+    README.md,
+max-complexity = 10

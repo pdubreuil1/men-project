@@ -1,19 +1,26 @@
 import numpy as np
 
 
-def seq_tournament(N, q, strength_distrib='uniform'):
+def seq_tournament(N, q, strength_distrib="uniform", **kwargs):
     '''
     Args:
         - N (integer): number of players
         - q (float in [0:1/2]): upset probability
         - strength_distrib (str): distribution used to select strength of
-                                  each player
+        each player
+        - kwargs: keyword arguments passed to the initial distribution.
     Output:
         - winner_rank : the rank of the winner.
     '''
-    if strength_distrib == 'uniform':
-        strength_players = np.random.uniform(low=0.0, high=1.0, size=N)
-    rank_players = strength_players.argsort()[::-1]
+    if strength_distrib == "uniform":
+        rank_players = np.random.uniform(low=0.0, high=1.0, size=N)
+    elif strength_distrib == "power":
+        rank_players = np.random.power(a=kwargs.get("power"), size=N)
+    else:
+        raise ValueError(
+            "{} is not an implemented initial distribition for ranks.".format(
+                strength_distrib
+            ))
     list_rank_players = list(rank_players)
     for round_id in range(N - 1):
         # select two players
@@ -37,20 +44,27 @@ def seq_tournament(N, q, strength_distrib='uniform'):
     return list_rank_players[0]
 
 
-def parallel_tournament(k, q, strength_distrib):
+def parallel_tournament(k, q, strength_distrib="uniform", **kwargs):
     '''
     Args:
         - k (integer): power of 2
         - q (float in [0:1/2]): upset probability
         - strength_distrib (str): distribution used to select strength of
-                                  each player
+        each player
+        - kwargs: keyword arguments passed to the initial distribution.
     Output:
         - winner_rank : the rank of the winner.
     '''
     N = 2**k
-    if strength_distrib == 'uniform':
-        strength_players = np.random.uniform(low=0.0, high=1.0, size=N)
-    rank_players = strength_players.argsort()[::-1]
+    if strength_distrib == "uniform":
+        rank_players = np.random.uniform(low=0.0, high=1.0, size=N)
+    elif strength_distrib == "power":
+        rank_players = np.random.power(a=kwargs.get("power"), size=N)
+    else:
+        raise ValueError(
+            "{} is not an implemented initial distribition for ranks.".format(
+                strength_distrib
+            ))
     list_rank_players = list(rank_players)
     for round_id in range(k - 1):
         list_permuted = np.random.permutation(list_rank_players)

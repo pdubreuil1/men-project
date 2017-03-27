@@ -48,7 +48,7 @@ def parallel_tournament(k, q, strength_distrib="uniform", **kwargs):
     '''
     Args:
         - k (integer): power of 2
-        - q (float in [0:1/2]): upset probability
+        - q (float in [0:1/2] or function of the two ranks): upset probability
         - strength_distrib (str): distribution used to select strength of
         each player
         - kwargs: keyword arguments passed to the initial distribution.
@@ -65,6 +65,12 @@ def parallel_tournament(k, q, strength_distrib="uniform", **kwargs):
             "{} is not an implemented initial distribition for ranks.".format(
                 strength_distrib
             ))
+    if type(q) == float:
+        upset_proba = q
+
+        def upset_func(rank_strong, rank_weak):
+            return upset_proba
+        q = upset_func
     list_rank_players = list(rank_players)
     for round_id in range(k - 1):
         list_permuted = np.random.permutation(list_rank_players)
@@ -79,7 +85,8 @@ def parallel_tournament(k, q, strength_distrib="uniform", **kwargs):
             else:
                 rank_player_weak = rank_player_1
                 rank_player_strong = rank_player_2
-            if np.random.binomial(1, q) == 1:
+            upset_proba = q(rank_player_strong, rank_player_weak)
+            if np.random.binomial(1, upset_proba) == 1:
                 # weaker player stays
                 list_rank_players.remove(rank_player_strong)
             else:
